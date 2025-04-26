@@ -1,0 +1,19 @@
+{
+  "manifest_version": 3,
+  "name": "caption search",
+  "version": "1.0",
+  "description": "adds a way of navigating the youtube video by searching the subtitles",
+  "icons": {
+    "48": "./icons/48.png"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.youtube.com/watch*"
+      ],
+      "js": [
+        "main.js"
+      ]
+    }
+  ]
+}
