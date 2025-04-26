@@ -1,4 +1,4 @@
 # Caption Search
-A firefox extension that:
+A browser extension (mainly firefox) that:
 
-adds a way of navigating the youtube video by searching the subtitles (still WIP)
+adds a way of navigating a youtube video by searching the subtitles (still WIP)
