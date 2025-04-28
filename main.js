@@ -29,9 +29,7 @@ waitForIt("#below").then(below => {
 	`;
 
 	const heading = document.createElement("h1");
-	heading.textContent = "Hello from wheatley!!!";
-
+	heading.innerText = "Hello!"
 	newdiv.appendChild(heading);
 	below.insertBefore(newdiv, below.firstChild);
-	console.log(below);
 });
