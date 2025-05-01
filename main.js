@@ -15,7 +15,6 @@ function waitForIt() {
 	});
 };
 
-
 waitForIt("#below").then(below => {
 	const newdiv = document.createElement("div");
 
@@ -28,8 +27,22 @@ waitForIt("#below").then(below => {
 		padding: 16px;
 	`;
 
-	const heading = document.createElement("h1");
-	heading.innerText = "Hello!"
-	newdiv.appendChild(heading);
-	below.insertBefore(newdiv, below.firstChild);
+	window.addEventListener("message", (event) => {
+		const data = event.data;
+		if (data.source === "WheatleyCaptionSearch" && data.response) {
+			const captions = data.response.captions.playerCaptionsTracklistRenderer;
+			console.log(captions.captionTracks)
+
+			const heading = document.createElement("h1");
+			heading.innerText = captions.captionTracks.map(x => x.vssId).join(" | ")
+			newdiv.appendChild(heading);
+			below.insertBefore(newdiv, below.firstChild);
+
+		}
+	});
+
+	const script = document.createElement("script");
+	script.textContent = `(_=>{window.postMessage({source: "WheatleyCaptionSearch", response: window.ytInitialPlayerResponse},"*")})()`;
+	(document.head || document.documentElement).appendChild(script);
+	script.remove();
 });
