@@ -1,10 +1,10 @@
 // the function name lol
-function waitForIt() {
+function waitForIt(query) {
 	return new Promise(resolve => {
 		const observer = new MutationObserver(_ => {
-			if (document.querySelector("#below")) {
+			if (document.querySelector(query)) {
 				observer.disconnect();
-				resolve(document.querySelector("#below"));
+				resolve(document.querySelector(query));
 			};
 		});
 
@@ -15,7 +15,7 @@ function waitForIt() {
 	});
 };
 
-waitForIt("#below").then(below => {
+function init(below) {
 	const newdiv = document.createElement("div");
 
 	newdiv.id = "captionSearchDiv";
@@ -26,23 +26,47 @@ waitForIt("#below").then(below => {
 		margin: 12px 0px 12px 0px;
 		padding: 16px;
 	`;
+	below.insertBefore(newdiv, below.firstChild);
+}
 
-	window.addEventListener("message", (event) => {
-		const data = event.data;
-		if (data.source === "WheatleyCaptionSearch" && data.response) {
-			const captions = data.response.captions.playerCaptionsTracklistRenderer;
-			console.log(captions.captionTracks)
+function update(event) {
+	const data = event.data;
+	if (data.source === "captionSearchExtension" && data.response) {
+		const captions = data.response.captions.playerCaptionsTracklistRenderer;
+		console.log(captions.captionTracks)
 
-			const heading = document.createElement("h1");
-			heading.innerText = captions.captionTracks.map(x => x.vssId).join(" | ")
-			newdiv.appendChild(heading);
-			below.insertBefore(newdiv, below.firstChild);
+		waitForIt("#captionSearchDiv").then(newdiv => {
+			if (newdiv.firstChild) {
+				newdiv.innerHTML = ''
+				const heading = document.createElement("h1");
+				heading.innerText = captions.captionTracks.map(x => x.vssId).join(" | ")
+				newdiv.appendChild(heading);
+			} else {
+				const heading = document.createElement("h1");
+				heading.innerText = captions.captionTracks.map(x => x.vssId).join(" | ")
+				newdiv.appendChild(heading);
+			}
+		});
+	}
+}
 
-		}
-	});
-
+function parseCaptions() {
 	const script = document.createElement("script");
-	script.textContent = `(_=>{window.postMessage({source: "WheatleyCaptionSearch", response: window.ytInitialPlayerResponse},"*")})()`;
+	script.textContent = `(_=>{window.postMessage({source: "captionSearchExtension", response: window.ytInitialPlayerResponse},"*")})()`;
 	(document.head || document.documentElement).appendChild(script);
 	script.remove();
-});
+}
+
+if (window.location.href.includes("watch?v=")) {
+	console.log(window.ytInitialPlayerResponse)
+	waitForIt("#below").then(below => {
+		init(below)
+		parseCaptions()
+		window.addEventListener(
+			"message",
+			(event) => {
+				update(event)
+			},
+		);
+	});
+}
