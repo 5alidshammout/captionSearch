@@ -33,7 +33,6 @@ function update(event) {
 	const data = event.data;
 	if (data.source === "captionSearchExtension" && data.response) {
 		const captions = data.response.captions.playerCaptionsTracklistRenderer;
-		console.log(captions.captionTracks)
 
 		waitForIt("#captionSearchDiv").then(newdiv => {
 			if (newdiv.firstChild) {
@@ -57,7 +56,13 @@ function parseCaptions() {
 	script.remove();
 }
 
+let url = window.location.href;
 if (window.location.href.includes("watch?v=")) {
+	console.log(url, window.location.href)
+	if (window.location.href !== url) {
+		url = window.location.href;
+		location.reload();
+	}
 	console.log(window.ytInitialPlayerResponse)
 	waitForIt("#below").then(below => {
 		init(below)

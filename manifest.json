@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "caption search",
-  "version": "0.4",
+  "version": "0.5",
   "description": "adds a way of navigating a youtube video by searching the subtitle",
   "icons": {
     "48": "./icons/48.png"
